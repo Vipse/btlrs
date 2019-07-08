@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form, Icon, Input, Button } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Redirect } from 'react-router-dom';
 
 import { actions as authActions } from 'redux/auth';
 
@@ -9,18 +10,28 @@ import './style.css'
 
 
 class Login extends Component {
+    
     handleSubmit = e => {
+        const { actions } = this.props;
+
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                actions.authenticateRequest(values);
             }
         });
     };
 
+    
+
     render() {
         const { getFieldDecorator } = this.props.form;
+        const { authenticated } = this.props;
 
+        if (authenticated) {
+            return <Redirect to="/" />;
+        }
+        
         return (
             <div className="login-form-wrapper">
                 <Form onSubmit={this.handleSubmit} className="login-form">
@@ -47,7 +58,7 @@ class Login extends Component {
                     </Form.Item>
                     <Form.Item>
                         <div className="secondary-actions">
-                            <a className="login-form-forgot" href="">
+                            <a className="login-form-forgot" href="#">
                                 Forgot password
                             </a>
                         </div>
@@ -79,5 +90,5 @@ const mapStateToProps = ({
     }, dispatch),
   });
 
-  
-export default Form.create()(Login)
+  const LoginForm = Form.create()(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

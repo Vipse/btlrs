@@ -12,15 +12,22 @@ import { actions as types } from './index';
 
 function* onAuthenticate({ payload }) {
   try {
-    const params = { ...payload, email: payload.email.trim() };
-    const data = yield call(httpAuth.authenticate, params);
-    if (data.user.role !== 'admin') {
-      const err = 'You are not permitted';
-      yield put(types.authenticateFailure({ message: err }));
-    } else {
-      yield call(setUser, data.user, data.token);
-      yield put(types.authenticateSuccess(data));
-    }
+    const data = {
+      user: {
+        name: "Brad",
+      },
+      token: "123421asdfas123",
+    };
+    yield call(setUser, data.user, data.token);
+    yield put(types.authenticateSuccess(data));
+    
+    // if (data.user.role !== 'admin') {
+    //   const err = 'You are not permitted';
+    //   yield put(types.authenticateFailure({ message: err }));
+    // } else {
+    //   yield call(setUser, data.user, data.token);
+    //   yield put(types.authenticateSuccess(data));
+    // }
   } catch (error) {
     let err;
     if (error.response.data === 'Unauthorized') {

@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import LoginPage from 'modules/Login';
@@ -11,11 +10,6 @@ import PrivateRoute from './PrivateRoute';
 
 
 class AppRouter extends PureComponent {
-    static propTypes = {
-      auth: PropTypes.object.isRequired,
-      isAuthenticated: PropTypes.func.isRequired,
-    };
-
     componentDidMount() {
       this.props.isAuthenticated();
     }
@@ -30,8 +24,12 @@ class AppRouter extends PureComponent {
         <Router>
           <Switch>
             <Route exact path="/login" component={LoginPage} />
-            <Route exact path="/main" component={Main} />
-            {/* <PrivateRoute path="/" component={MainWrapper} authenticated={authenticated} /> */}
+            <PrivateRoute exact path="/users" component={Main} authenticated={authenticated}  />
+            <PrivateRoute exact path="/orders" component={Main} authenticated={authenticated}  />
+            <PrivateRoute exact path="/profile" component={Main} authenticated={authenticated}  />
+            <PrivateRoute exact path="/zones" component={Main} authenticated={authenticated} />
+            <PrivateRoute exact path="/user/:id" component={Main} authenticated={authenticated} />
+            <Route path="/" component={()=><Redirect to="/users"/>} />
           </Switch>
         </Router>
       );
